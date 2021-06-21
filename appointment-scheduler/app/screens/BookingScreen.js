@@ -25,36 +25,96 @@ let createApp= (name,email,slotDate,slotTime)=>{
 }
 
 const InformationForm=({selectedDate,selectedTime,setSelectedTime})=>{
-    const [nameText, setNameText] = React.useState(null);
-    const [emailText, setEmailText] = React.useState(null);
+    const [nameText, setNameText] = React.useState("");
+    const [emailText, setEmailText] = React.useState("");
     const [buttonDisabled,setDisabled]= useState(true);
     const navigation=useNavigation();
-  
+    
+    const checkNameField=(text)=>{
+        
+
+        if (!text.trim()) {
+            
+            //setDisabled(true);
+            return false;
+          }
+          return true;
+        //setNameText(text);
+       // setDisabled(false);
+       
+       
+
+    }
+    const checkEmailField=(text) => {
+        
+       
+        let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+        if (reg.test(text) === false) {
+          
+          //setDisabled(true);
+          return false;
+        }
+        else {
+          //setEmailText(text);
+          //if(nameText!=null&&nameText!="")setDisabled(false);
+          console.log("Email is Correct");
+          return true;
+        }
+      }
+    
+      const checkField=()=>{
+
+        if((!checkNameField(nameText))&&(!checkEmailField(emailText))&&selectedTime==null){
+            alert("please prroviide name and email and time desired")
+
+        }
+        else if((!checkNameField(nameText))&&(!checkEmailField(emailText))){
+            alert("please prroviide name and email ")
+        }
+        else if(!checkNameField(nameText)&&selectedTime==null){
+            alert("please prroviide name and time desired")
+        }
+        else if (!checkEmailField(emailText)&&selectedTime==null){
+            alert("please prroviide email and time desired")
+        }
+        else if (!checkNameField(nameText)){
+            alert("please prroviide name ")
+        }
+        else if(!checkEmailField(emailText)){
+            alert("please prroviide  email ")
+        }
+        else {
+            createApp(nameText,emailText,selectedDate.toJSON().substring(0,10),selectedTime)
+            navigation.navigate('ConfirmationScreen', {name: nameText, date:selectedDate.toJSON().substring(0,10),time:selectedTime} )
+        }
+        
+      }
     return (
         <View>
-            <TextInput
-                 style={{backgroundColor:'white',
-                }}
-                 onChangeText={setNameText}
-                
-                 textContentType={'name'}
-                
-            />
-             <TextInput
-                 style={{backgroundColor:'blue',
-                }}
-                onChangeText={setEmailText}
-                 
-                 textContentType={'emailAddress'}
-                
-            />
+            <View style={styles.textContainer}>
+                <TextInput
+                    style={styles.textInput}
+                    onChangeText={setNameText}
+                    textContentType={'name'}
+                    
+                />
+                <TextInput
+                    style={styles.textInput}
+                    onChangeText={setEmailText}
+                    textContentType={'emailAddress'}
+                    
+                />
+            </View>
            
             <TouchableOpacity
-                style={styles.bookButtonTouch}
+                style={styles.bookButtonTouch,{alignSelf:'center'}}
+                
                 onPress={()=>{
-                    console.log(nameText,emailText,selectedDate.toJSON().substring(0,10),selectedTime)
-                    navigation.navigate('ConfirmationScreen', {name: nameText, date:selectedDate.toJSON().substring(0,10),time:selectedTime} )
+                    checkField()
+                   console.log(nameText,emailText,selectedDate.toJSON().substring(0,10),selectedTime)
+                   // navigation.navigate('ConfirmationScreen', {name: nameText, date:selectedDate.toJSON().substring(0,10),time:selectedTime} )
                 }
+               
                     
                 }
                 
@@ -358,7 +418,23 @@ numberRect: {
     justifyContent:'center',
     alignSelf:'center',
     fontFamily:"Futura",
-}
+},
+textContainer:{
+    height: 100,
+    width: 300,
+    alignSelf: 'center',
+    justifyContent:'center',
+    alignItems:'center',
+    backgroundColor:'yellow'
+},
+textInput:{ width: 100,
+    backgroundColor:'white',
+    
+    borderBottomWidth:.5
+
+
+
+},
 
 
 })
